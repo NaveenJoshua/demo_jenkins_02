@@ -6,6 +6,7 @@ pipeline {
   environment {
     VERSION = "0.1.0"        
     VERSION_RC = "rc.2"
+    RELEASE = '20.04'
   }
   stages {
     stage('Audit tools') {                        
@@ -62,9 +63,6 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    RELEASE = '20.04'
   }
   post {
     always {
