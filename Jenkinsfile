@@ -12,6 +12,8 @@ pipeline {
                 stage('linux-arm64') {
                     steps {
                         echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+                        chmod +x test1.sh 
+                        ./test1.sh
                     }
                 }
                 stage('linux-amd64') {
@@ -29,8 +31,6 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Testing release ${RELEASE}..."
-                chmod +x test1.sh 
-                ./test1.sh
             }
         }
         stage('Deploy') {
