@@ -58,6 +58,8 @@ pipeline {
     always {
       echo 'Prints whether deploy happened or not, success or failure'
     }
-
+    success {
+      archiveArtifacts 'helloResults.txt'
+    }
   }
 }
