@@ -28,9 +28,11 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo "Testing release ${RELEASE}..."
-                chmod +x test1.sh 
-                ./test1.sh
+                sh '''
+                    echo "Testing release ${RELEASE}..."
+                    chmod +x test1.sh 
+                    ./test1.sh
+                '''
             }
         }
         stage('Deploy') {
