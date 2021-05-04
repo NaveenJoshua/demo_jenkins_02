@@ -1,57 +1,63 @@
 pipeline {
-    agent any
-    environment {
-        RELEASE='20.04'
-    }
-    stages {
-        stage('Build') {
-            environment {
-                LOG_LEVEL='INFO'
-            }
-            parallel {
-                stage('linux-arm64') {
-                    steps {
-                        sh '''
+  agent any
+  stages {
+    stage('Build') {
+      environment {
+        LOG_LEVEL = 'INFO'
+      }
+      parallel {
+        stage('linux-arm64') {
+          steps {
+            sh '''
                             echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
                             chmod +x test1.sh 
                             ./test1.sh
                         '''
-                    }
-                }
-                stage('linux-amd64') {
-                    steps {
-                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
-                    }
-                }
-                stage('windows-amd64') {
-                    steps {
-                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
-                    }
-                }
-            }
+          }
         }
-        stage('Test') {
-            steps {
-                echo "Testing $RELEASE"
-                writeFile file: 'test-results.txt', text: 'passed'
-            }
+
+        stage('linux-amd64') {
+          steps {
+            echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+          }
         }
-        stage('Deploy') {
-            input {
-                message 'Deploy?'
-                ok 'Do it!'
-                parameters {
-                    string(name: 'TARGET_ENVIRONMENT', defaultValue: 'PROD', description: 'Target deployment environment')
-                }
-            }
-            steps {
-                echo "Deploying release ${RELEASE} to environment ${TARGET_ENVIRONMENT}"
-            }
-        }        
+
+        stage('windows-amd64') {
+          steps {
+            echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+          }
+        }
+      }
     }
-    post{
-        always {
-             echo 'Prints whether deploy happened or not, success or failure'
-        }
+
+    stage('Test') {
+      steps {
+          echo "Testing Release $RELEASE"
+          writeFile file: 'helloResults.txt', text : 'passed'
+      }
     }
+
+    stage('Deploy') {
+      input {
+        message 'Deploy?'
+        id 'Do it!'
+        parameters {
+          string(name: 'TARGET_ENVIRONMENT', defaultValue: 'PROD', description: 'Target deployment environment')
+        }
+      }
+      steps {
+        echo "Deploying release ${RELEASE} to environment ${TARGET_ENVIRONMENT}"
+      }
+    }
+
+  }
+  environment {
+    RELEASE = '20.04'
+  }
+  post {
+    always {
+      echo 'Prints whether deploy happened or not, success or failure'
+    }
+
+  }
 }
