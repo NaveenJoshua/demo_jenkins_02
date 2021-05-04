@@ -27,6 +27,12 @@ pipeline {
                 chmod +x test1.sh 
                 ./test1.sh
             '''
+            sh 'chmod +x m2/demo3/build.sh'
+            withCredentials([string(credentialsId: 'an-api-key', variable: 'API_KEY')]) {
+                sh '''
+                     ./build.sh
+                '''
+            }
           }
         }
         stage('linux-amd64') {
